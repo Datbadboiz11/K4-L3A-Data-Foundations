@@ -1,7 +1,7 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** Nhóm UET — K4-L3A
-**Thành viên:** Thân Tiến Đạt, [Thành viên 2], [Thành viên 3]
+**Nhóm:** G49
+**Thành viên:** Nguyễn Minh Đức, Đặng Hữu Cương, Trần Đức Lộc, Thân Tiến Đạt
 **Ngày:** 19/09/2026
 
 > **Nộp 1 bản / nhóm.** Phần cá nhân (hướng tiếp cận, kết quả riêng, dự đoán…) mỗi thành viên nộp riêng trong `REPORT_CANHAN.md`. Chi tiết thang điểm: `docs/SCORING.md`.
@@ -14,23 +14,20 @@
 
 ### Chủ đề (Domain) & Lý Do Chọn
 
-**Chủ đề:** Quy chế đào tạo tín chỉ, quy định học vụ, chính sách tuyển sinh và dịch vụ sinh viên Trường Đại học Công nghệ – Đại học Quốc gia Hà Nội (VNU-UET).
+**Chủ đề:** Thông tin học vụ, tuyển sinh và hỗ trợ sinh viên của Trường Đại học Công nghệ - ĐHQGHN (UET)
 
 **Tại sao nhóm chọn chủ đề này?**
-> 1. Trường Đại học Công nghệ (ĐHQGHN) áp dụng mô hình đào tạo theo hệ thống tín chỉ nghiêm ngặt dựa trên Quyết định số 5115/QĐ-ĐHQGHN với 47 điều khoản chi tiết, tạo ra bài toán tra cứu học vụ thực tế với độ phức tạp cao.  
-> 2. Khối lượng thắc mắc của sinh viên về quy chế học vụ (cảnh báo buộc thôi học, điều kiện đăng ký môn, học bổng theo Nghị định 179, chuẩn đầu ra ngoại ngữ) là rất lớn; một hệ thống RAG chuẩn xác sẽ trực tiếp hỗ trợ giải tỏa áp lực tư vấn cho Phòng Đào tạo và Phòng Công tác Sinh viên.  
-> 3. Bộ tài liệu có tính phân cấp hành chính rõ rệt (Chương, Điều, Khoản) và phân hóa rõ ràng theo đối tượng độc giả (`audience: student` vs `audience: faculty`), tạo tiền đề tuyệt vời để kiểm chứng hiệu quả của các giải thuật chunking và cơ chế lọc metadata (metadata filtering).
+> *Nhóm lựa chọn các tài liệu công khai của Trường Đại học Công nghệ - ĐHQGHN vì chúng chứa nhiều thông tin thực tế liên quan đến sinh viên, giảng viên và hoạt động đào tạo của nhà trường. Bộ tài liệu bao gồm nhiều loại nội dung như tuyển sinh, cơ hội nghề nghiệp, quy chế đào tạo và chiến lược phát triển, phù hợp để xây dựng và đánh giá hệ thống RAG có khả năng truy xuất thông tin theo nhiều chủ đề và nhóm người dùng khác nhau.*
 
 ### Danh sách tài liệu (Data Inventory)
 
 | # | Tên tài liệu | Nguồn (Source URL) | Ngày lấy / Phiên bản | Số ký tự | Metadata đã gán |
-|---|--------------|------------|--------------------|----------|-----------------|
-| 1 | Quy chế đào tạo đại học (QĐ 5115) | https://uet.edu.vn/quy-che-dao-tao-dai-hoc-cua-dai-hoc-quoc-gia-ha-noi-theo-quyet-dinh-5115qd-dhqghn/ | 2026-09-19 / Quyết định 5115/QĐ-ĐHQGHN | 73,177 | `doc_id: quy-che-dao-tao`, `audience: student`, `department: dao-tao`, `category: academic-regulation` |
-| 2 | Thông tin tuyển sinh ĐHCQ 2026 | https://uet.edu.vn/tuyen-sinh/ | 2026-09-19 / Đề án tuyển sinh 2026 | 3,606 | `doc_id: tuyen-sinh`, `audience: student`, `department: tuyen-sinh`, `category: admissions` |
-| 3 | Cơ hội nghề nghiệp & việc làm | https://vieclam.uet.vnu.edu.vn/co-hoi-nghe-nghiep | 2026-09-19 / Bản tin việc làm 09/2026 | 4,239 | `doc_id: co-hoi-nghe-nghiep`, `audience: student`, `department: ctsv`, `category: career-services` |
-| 4 | Quy định mở ngành đào tạo | https://uet.edu.vn/quy-dinh-dieu-kien-trinh-tu-thu-tuc-mo-nganh-dao-tao-trinh-do-dai-hoc/ | 2026-09-19 / Quyết định mở ngành | 1,869 | `doc_id: quy-dinh-mo-nganh`, `audience: faculty`, `department: dao-tao`, `category: institutional-governance` |
-| 5 | Chiến lược phát triển đến 2030, tầm nhìn 2045 | https://uet.edu.vn/chien-luoc-phat-trien/ | 2026-09-19 / Nghị quyết chiến lược | 14,888 | `doc_id: chien-luoc-phat-trien`, `audience: general-public`, `department: bgh`, `category: strategy` |
-
+|---|--------------|--------------------|----------------------|-----------|-----------------|
+| 1 | Cơ hội nghề nghiệp | https://vieclam.uet.vnu.edu.vn/co-hoi-nghe-nghiep | Không nêu trong report cá nhân | Không nêu trong report cá nhân | `slug=co-hoi-nghe-nghiep`, `audience=student`, `domain=career-center`, `doc_type=service`, `language=vi`, `source_type=public-source` |
+| 2 | Thông tin tuyển sinh | https://uet.edu.vn/tuyen-sinh/ | Không nêu trong report cá nhân | Không nêu trong report cá nhân | `slug=tuyen-sinh`, `audience=student`, `domain=admissions`, `doc_type=admission`, `language=vi`, `source_type=public-source` |
+| 3 | Chiến lược phát triển | https://uet.edu.vn/chien-luoc-phat-trien/ | Không nêu trong report cá nhân | Không nêu trong report cá nhân | `slug=chien-luoc-phat-trien`, `audience=all`, `domain=admin`, `doc_type=strategy`, `language=vi`, `source_type=public-source` |
+| 4 | Quy định thủ tục mở ngành đào tạo | https://uet.edu.vn/quy-dinh-dieu-kien-trinh-tu-thu-tuc-mo-nganh-dao-tao-trinh-do-dai-hoc/ | Không nêu trong report cá nhân | Không nêu trong report cá nhân | `slug=quy-dinh-mo-nganh`, `audience=faculty`, `domain=academic`, `doc_type=policy`, `language=vi`, `source_type=public-source` |
+| 5 | Quy chế đào tạo đại học | https://uet.edu.vn/quy-che-dao-tao-dai-hoc-cua-dai-hoc-quoc-gia-ha-noi-theo-quyet-dinh-5115qd-dhqghn/ | Quyết định 5115/QĐ-ĐHQGHN | Không nêu trong report cá nhân | `slug=quy-che-dao-tao`, `audience=[student, faculty]`, `domain=academic`, `doc_type=policy`, `language=vi`, `source_type=public-source` |
 **Danh sách kiểm tra quản trị dữ liệu (Data governance checklist):**
 - [x] Tập tài liệu (Corpus) chỉ chứa nguồn công khai/được phép dùng và không chứa dữ liệu cá nhân, thông tin đăng nhập hoặc tài liệu nội bộ.
 - [x] Mỗi tài liệu có `source_url`, `retrieved_at`, `document_version` (hoặc ngày hiệu lực) trong metadata.
@@ -38,14 +35,15 @@
 ### Cấu trúc Metadata (Metadata Schema)
 
 | Trường metadata | Kiểu | Ví dụ giá trị | Tại sao hữu ích cho truy xuất (retrieval)? |
-|----------------|------|---------------|-------------------------------|
-| `doc_id` | `str` | `"quy-che-dao-tao"` | Định danh duy nhất cho văn bản gốc, dùng để nhóm các chunk và hỗ trợ xóa tài liệu theo ID (`delete_document`). |
-| `audience` | `str` | `"student"`, `"faculty"` | Phân quyền/định hướng đối tượng tra cứu. Cho phép lọc triệt để các quy định chỉ áp dụng cho cán bộ/giảng viên khi sinh viên đặt câu hỏi. |
-| `department` | `str` | `"dao-tao"`, `"ctsv"`, `"tuyen-sinh"` | Khoanh vùng đơn vị chịu trách nhiệm xử lý nghiệp vụ, giúp AI loại bỏ các tài liệu từ phòng ban không liên quan. |
-| `category` | `str` | `"academic-regulation"`, `"admissions"` | Phân loại chủ đề ngữ nghĩa, ngăn ngừa việc nhầm lẫn giữa quy chế học vụ với tin tuyển dụng hoặc quy chế thi đua. |
-| `document_version` | `str` | `"Quyết định 5115/QĐ-ĐHQGHN"` | Đảm bảo tính xác thực pháp lý và tính cập nhật, giúp hệ thống phân biệt phiên bản mới nhất với các văn bản đã hết hiệu lực. |
-| `source_url` | `str` | `"https://uet.edu.vn/..."` | Cung cấp nguồn kiểm chứng minh bạch cho sinh viên theo dõi trực tiếp điều khoản gốc trên cổng thông tin UET. |
-
+|----------------|------|---------------|---------------------------------------------|
+| `slug` | string | `tuyen-sinh` | Giúp định danh ngắn gọn từng tài liệu/chủ đề, thuận tiện khi lọc hoặc truy vết kết quả về đúng nguồn. |
+| `audience` | string / list[string] | `student`, `faculty`, `[student, faculty]` | Cho phép lọc tài liệu theo nhóm người dùng, ví dụ chỉ tìm thông tin dành cho sinh viên hoặc giảng viên. |
+| `domain` | string | `academic`, `admissions`, `career-center` | Giúp giới hạn phạm vi tìm kiếm theo lĩnh vực, giảm số tài liệu không liên quan trước khi similarity search. |
+| `doc_type` | string | `policy`, `admission`, `service`, `strategy` | Hữu ích khi truy vấn cần một loại tài liệu cụ thể, ví dụ chỉ tìm quy định/chính sách hoặc thông tin tuyển sinh. |
+| `language` | string | `vi` | Cho phép lọc theo ngôn ngữ, đặc biệt hữu ích khi hệ thống có corpus đa ngôn ngữ. |
+| `source_type` | string | `public-source` | Giúp phân biệt nguồn công khai với nguồn nội bộ hoặc nguồn khác, hỗ trợ kiểm soát phạm vi và độ tin cậy của dữ liệu truy xuất. |
+| `doc_id` | string | `quy-che-dao-tao` | Dùng để nhóm nhiều chunk thuộc cùng một tài liệu gốc, hỗ trợ truy vết nguồn và xoá toàn bộ chunk của một document. |
+| `source_url` | string | `https://uet.edu.vn/tuyen-sinh/` | Giúp truy vết kết quả về trang nguồn gốc để người dùng kiểm chứng thông tin. |
 ---
 
 ## 2. Thiết kế chiến lược (Strategy Design) — Nhóm (15 điểm)
@@ -54,102 +52,47 @@
 
 ### Phân tích đường cơ sở (Baseline Analysis)
 
-Chạy `ChunkingStrategyComparator().compare()` trên 3 tài liệu tiêu biểu của kho dữ liệu:
+Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 | Tài liệu | Chiến lược (Strategy) | Số lượng Chunk | Độ dài trung bình | Giữ được ngữ cảnh không? |
 |-----------|----------|-------------|------------|-------------------|
-| `quy-che-dao-tao.md` (73,177 chars) | FixedSizeChunker (`fixed_size`, cs=200) | 488 | 199.9 ký tự | **Kém:** Bị ngắt cứng giữa chừng câu, cắt đôi các điều kiện và hình thức xử phạt ở các Điều 28, 29. |
-| `quy-che-dao-tao.md` (73,177 chars) | SentenceChunker (`by_sentences`) | 133 | 542.7 ký tự | **Trung bình:** Tách theo câu nhưng làm mất liên kết giữa câu dẫn quy định và danh sách gạch đầu dòng $a, b, c$. |
-| `quy-che-dao-tao.md` (73,177 chars) | RecursiveChunker (`recursive`, cs=200) | 478 | 151.3 ký tự | **Tốt:** Ưu tiên tách theo đoạn `\n\n`, giữ trọn vẹn ngữ nghĩa của từng khoản/điểm trong điều khoản. |
-| `tuyen-sinh.md` (3,606 chars) | FixedSizeChunker (`fixed_size`, cs=200) | 24 | 198.2 ký tự | **Kém:** Cắt ngang bảng chỉ tiêu và chính sách học bổng Nghị định 179 thành hai nửa rời rạc. |
-| `tuyen-sinh.md` (3,606 chars) | SentenceChunker (`by_sentences`) | 8 | 449.2 ký tự | **Trung bình:** Gộp nhiều mốc thời gian và phương thức xét tuyển vào cùng một chunk lớn. |
-| `tuyen-sinh.md` (3,606 chars) | RecursiveChunker (`recursive`, cs=200) | 23 | 155.7 ký tự | **Rất tốt:** Phân tách hoàn hảo từng khối thông tin: chỉ tiêu, tổ hợp xét tuyển, học bổng theo mục `##`. |
-| `co-hoi-nghe-nghiep.md` (4,239 chars) | FixedSizeChunker (`fixed_size`, cs=200) | 28 | 199.6 ký tự | **Kém:** Ngắt giữa chừng tên doanh nghiệp và yêu cầu tuyển dụng kỹ sư. |
-| `co-hoi-nghe-nghiep.md` (4,239 chars) | SentenceChunker (`by_sentences`) | 4 | 1058.5 ký tự | **Kém:** Do bản tin tuyển dụng ít dấu chấm câu truyền thống, chunk bị phình to vượt quá 1,000 ký tự. |
-| `co-hoi-nghe-nghiep.md` (4,239 chars) | RecursiveChunker (`recursive`, cs=200) | 25 | 168.1 ký tự | **Tốt:** Bắt đúng các ngắt dòng `\n` và `\n\n` để gom từng vị trí việc làm thành một chunk hoàn chỉnh. |
+| Bộ 5 tài liệu UET | FixedSizeChunker (`fixed_size`) | Không có số liệu trong report cá nhân | Không có số liệu trong report cá nhân | Có overlap nên giữ được một phần ngữ cảnh, nhưng vẫn có thể cắt gãy câu |
+| Bộ 5 tài liệu UET | SentenceChunker (`by_sentences`, 3 câu/chunk) | Không có số liệu trong report cá nhân | Không có số liệu trong report cá nhân | Tốt nhất trong thử nghiệm của nhóm: giữ nguyên ranh giới câu và đạt 5/5 Top-1 |
+| Bộ 5 tài liệu UET | RecursiveChunker (`recursive`) | Không có số liệu trong report cá nhân | Không có số liệu trong report cá nhân | Khá tốt: ưu tiên đoạn, dòng và câu; phụ thuộc cấu trúc xuống dòng của tài liệu |
+
+> Các report cá nhân không ghi lại output định lượng của `ChunkingStrategyComparator().compare()`, vì vậy nhóm chỉ tổng hợp kết quả định tính và không tự suy đoán số chunk hoặc độ dài trung bình.
 
 ### Chiến lược của từng thành viên
 
-**Thành viên 1 — Thân Tiến Đạt**
-- **Loại chiến lược:** RecursiveChunker (Tối ưu danh sách phân tách phân cấp cho văn bản quy phạm học vụ)
-- **Mô tả & lý do chọn cho chủ đề này:**  
-  Văn bản quy chế như Quyết định 5115 có tính phân tầng logic: *Chương $\rightarrow$ Điều $\rightarrow$ Khoản $\rightarrow$ Điểm*. Tôi chọn `RecursiveChunker` vì thuật toán đệ quy lần lượt qua `["\n\n", "\n", ". ", " ", ""]`. Khi một Điều khoản nằm gọn trong `chunk_size`, nó được giữ nguyên vẹn 100%. Chỉ khi một Điều quá dài mới bị chia nhỏ xuống mức Khoản hoặc câu, loại bỏ hoàn toàn hiện tượng câu cụt hoặc mất tiêu đề điều luật.
-- **Code snippet:**
-```python
-class RecursiveChunker:
-    """Đệ quy chia nhỏ văn bản theo độ ưu tiên separator, tối ưu cho quy chế UET."""
-    DEFAULT_SEPARATORS = ["\n\n", "\n", ". ", " ", ""]
+> Mỗi thành viên điền một khối dưới đây (copy thêm nếu nhóm có nhiều hơn 3 người).
 
-    def __init__(self, separators: list[str] | None = None, chunk_size: int = 500) -> None:
-        self.separators = self.DEFAULT_SEPARATORS if separators is None else list(separators)
-        self.chunk_size = chunk_size
+**Thành viên 1 — Nguyễn Minh Đức**
+- **Loại chiến lược:** FixedSizeChunker có overlap.
+- **Mô tả & lý do chọn cho chủ đề này:** Chia theo kích thước cố định dễ kiểm soát độ dài đầu vào và overlap giúp hạn chế mất ngữ cảnh ở ranh giới chunk. Tuy nhiên, lần benchmark trong report cá nhân đã nạp nhầm corpus mẫu (`vi_retrieval_notes.md`, `rag_system_design.md`) thay vì bộ tài liệu UET, nên cả 5 truy vấn đều không lấy được chunk liên quan.
 
-    def chunk(self, text: str) -> list[str]:
-        if not text:
-            return []
-        return self._split(text, self.separators)
+**Thành viên 2 — Đặng Hữu Cương**
+- **Loại chiến lược:** SentenceChunker (`max_sentences_per_chunk=3`) kết hợp Gemini embedding.
+- **Mô tả & lý do chọn:** Mỗi chunk gồm tối đa ba câu hoàn chỉnh, phù hợp với văn bản quy chế, tuyển sinh và chiến lược có nhiều mệnh đề. Chiến lược này không cắt gãy câu và đạt kết quả tốt nhất: 5/5 câu hỏi đều lấy đúng chunk ở Top-1.
 
-    def _split(self, current_text: str, remaining_separators: list[str]) -> list[str]:
-        if not current_text:
-            return []
-        if len(current_text) <= self.chunk_size:
-            return [current_text]
-        if not remaining_separators:
-            return [current_text[i : i + self.chunk_size] for i in range(0, len(current_text), self.chunk_size)]
+**Thành viên 3 — Trần Đức Lộc**
+- **Loại chiến lược:** RecursiveChunker.
+- **Mô tả & lý do chọn:** Tách đệ quy theo thứ tự `\n\n`, `\n`, `. `, khoảng trắng rồi mới cắt cứng, nhờ đó ưu tiên giữ cấu trúc đoạn và câu của các tài liệu dài. Report cá nhân đã hoàn thiện phần cài đặt và 42/42 bài test, nhưng chưa ghi kết quả benchmark 5 câu hỏi chung nên chưa thể chấm điểm truy xuất.
 
-        sep = remaining_separators[0]
-        next_separators = remaining_separators[1:]
-        if sep == "":
-            return [current_text[i : i + self.chunk_size] for i in range(0, len(current_text), self.chunk_size)]
-        if sep not in current_text:
-            return self._split(current_text, next_separators)
-
-        splits = current_text.split(sep)
-        sub_chunks: list[str] = []
-        for piece in splits:
-            if piece:
-                if len(piece) > self.chunk_size:
-                    sub_chunks.extend(self._split(piece, next_separators))
-                else:
-                    sub_chunks.append(piece)
-
-        merged: list[str] = []
-        cur = ""
-        for piece in sub_chunks:
-            if not cur:
-                cur = piece
-            elif len(cur) + len(sep) + len(piece) <= self.chunk_size:
-                cur += sep + piece
-            else:
-                merged.append(cur)
-                cur = piece
-        if cur:
-            merged.append(cur)
-        return merged
-```
-
-**Thành viên 2 — [Thành viên 2]**
-- **Loại chiến lược:** SentenceChunker (`max_sentences_per_chunk=3`)
-- **Mô tả & lý do chọn:**  
-  Sử dụng ranh giới dấu câu (`. `, `! `, `? `) để tạo các chunk gồm tối đa 3 câu hoàn chỉnh. Chiến lược này giúp câu văn không bị cắt ngang giữa chừng, phù hợp với các đoạn văn mô tả chung. Tuy nhiên, đối với văn bản hành chính có cấu trúc liệt kê và danh sách gạch đầu dòng, nó dễ làm đứt liên kết giữa câu chủ đề và các điều kiện thành phần.
-- **Code snippet (nếu custom):** Sử dụng `SentenceChunker` tiêu chuẩn trong `src/chunking.py`.
-
-**Thành viên 3 — [Thành viên 3]**
-- **Loại chiến lược:** FixedSizeChunker (`chunk_size=500, overlap=50`)
-- **Mô tả & lý do chọn:**  
-  Chia tài liệu thành các khối cố định 500 ký tự với độ chồng chéo 50 ký tự. Chiến lược này đơn giản nhất, đảm bảo kích thước đồng đều để đưa vào mô hình embedding mà không sợ vượt token limit. Tuy nhiên, điểm yếu nghiêm trọng là cắt cơ học tại ký tự bất kỳ, dễ làm xẻ đôi từ ngữ hoặc ngắt đôi điều khoản quan trọng.
-- **Code snippet (nếu custom):** Sử dụng `FixedSizeChunker` tiêu chuẩn trong `src/chunking.py`.
+**Thành viên 4 — Thân Tiến Đạt**
+- **Loại chiến lược:** RecursiveChunker kết hợp pre-filter metadata và OpenAI `text-embedding-3-small`.
+- **Mô tả & lý do chọn:** Chiến lược đệ quy tránh tạo chunk vụn bằng cách gom các mảnh nhỏ tới gần `chunk_size`; bộ lọc metadata giới hạn tập ứng viên trước khi tính similarity. Kết quả đạt 5/5 câu có chunk đúng trong Top-3, trong đó 4 câu ở Top-1 và câu tuyển sinh ở Top-2.
 
 ### So Sánh Giữa Các Thành Viên
 
 | Thành viên | Chiến lược (Strategy) | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
 |-----------|----------|----------------------|-----------|----------|
-| Thân Tiến Đạt | RecursiveChunker (`recursive`) | **9.5 / 10** | Giữ trọn vẹn ngữ nghĩa từng Điều/Khoản, độ mạch lạc cao, chunking thích ứng linh hoạt. | Chi phí tính toán đệ quy cao hơn một chút so với cắt cố định. |
-| Thành viên 2 | SentenceChunker (`by_sentences`) | **7.5 / 10** | Giữ trọn vẹn từng câu, không sinh ra câu cụt. | Dễ tạo chunk quá dài khi gặp văn bản liệt kê ít dấu chấm câu; làm mất câu dẫn của danh sách. |
-| Thành viên 3 | FixedSizeChunker (`fixed_size`) | **6.0 / 10** | Đơn giản, độ dài chunk hoàn toàn đồng nhất. | Cắt cụt câu, xẻ đôi thông tin quan trọng ở ranh giới chunk, làm giảm điểm cosine similarity. |
+| Nguyễn Minh Đức | FixedSize + overlap | 0/10 theo kết quả đã ghi | Đơn giản, độ dài chunk ổn định, có overlap | Nạp sai corpus nên không đánh giá được hiệu quả thực trên bộ UET; có thể cắt gãy câu |
+| Đặng Hữu Cương | Sentence, 3 câu/chunk | 10/10 | 5/5 Top-1; giữ trọn câu, phù hợp văn bản quy định | Có thể sinh chunk quá dài/ngắn nếu độ dài câu không đều; regex dễ tách sai từ viết tắt |
+| Trần Đức Lộc | Recursive | Chưa có số liệu | Giữ cấu trúc đoạn/câu, có fallback an toàn | Chưa điền bảng benchmark nên chưa so sánh định lượng được |
+| Thân Tiến Đạt | Recursive + metadata pre-filter | 9/10 | 5/5 Top-3; kiểm soát đúng nhóm người dùng | Câu tuyển sinh chỉ ở Top-2; phụ thuộc metadata chính xác |
 
 **Chiến lược nào tốt nhất cho chủ đề này? Tại sao?**
-> **RecursiveChunker** là chiến lược tốt nhất vượt trội cho bộ dữ liệu quy chế UET. Do đặc thù tài liệu pháp quy bao gồm nhiều cấp độ tổ chức (tiêu đề, điều khoản, gạch đầu dòng), RecursiveChunker bảo toàn cấu trúc tự nhiên bằng cách ưu tiên ngắt ở ranh giới đoạn (`\n\n`) trước. Nhờ đó, một điều khoản quy chế (như điều kiện thôi học tại Điều 28) được chứa trọn vẹn trong một chunk đơn lẻ, giúp mô hình Vector Store truy xuất đúng 100% ngữ cảnh mà không bị phân mảnh thông tin.
+> SentenceChunker với ba câu mỗi chunk cho kết quả tốt nhất trên bộ đánh giá hiện có vì đạt 5/5 câu ở Top-1. Các tài liệu UET chủ yếu là văn bản hành chính, quy chế và thông báo; giữ nguyên ranh giới câu giúp mỗi chunk chứa một đơn vị ý nghĩa hoàn chỉnh. Tuy nhiên, trong hệ thống thực tế nên kết hợp cách chia theo câu với pre-filter metadata của Đạt để vừa bảo toàn ngữ nghĩa vừa tránh trả về tài liệu sai nhóm người dùng.
 
 ---
 
@@ -160,50 +103,44 @@ class RecursiveChunker:
 > **Đúng 5 câu hỏi**, đa dạng, có thể kiểm chứng; **ít nhất 1 câu** cần lọc metadata mới trả lời tốt. Đây là bộ câu hỏi chung cho mọi thành viên chạy.
 
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
-|---|-------|-------------------------------|--------------------------|
-| 1 | Sinh viên có thể tìm kiếm những cơ hội nghề nghiệp nào thông qua UET? | Cổng thông tin việc làm UET cung cấp các cơ hội thực tập, việc làm kỹ sư lập trình C/C++, Embedded Software, nhân viên phân tích mô phỏng, thiết kế cơ khí và kết nối doanh nghiệp đối tác tuyển dụng. | `co-hoi-nghe-nghiep#0` (`co-hoi-nghe-nghiep.md`) |
-| 2 | UET hiện cung cấp những thông tin tuyển sinh nào cho thí sinh? | Điểm chuẩn trúng tuyển, chính sách học bổng theo Nghị định 179/2026/NĐ-CP hỗ trợ chi phí sinh hoạt, ngưỡng bảo đảm chất lượng đầu vào, cổng đăng ký trực tuyến và danh mục các ngành đào tạo đại học chính quy. | `tuyen-sinh#1` (`tuyen-sinh.md`) |
-| 3 | Những mục tiêu chính trong chiến lược phát triển của Trường Đại học Công nghệ là gì? | Trở thành cơ sở giáo dục đại học hàng đầu trong cả nước về tiên phong, sáng tạo và dẫn dắt trong đào tạo nguồn nhân lực bậc cao và khoa học công nghệ; duy trì vị thế trường kỹ thuật công nghệ tiên tiến ở Châu Á vào năm 2045. | `chien-luoc-phat-trien#2` (`chien-luoc-phat-trien.md`) |
-| 4 | Điều kiện và trình tự để mở một ngành đào tạo trình độ đại học được quy định như thế nào? | Căn cứ theo Thông tư số 02/2022/TT-BGDĐT và Thông tư số 12/2024/TT-BGDĐT của Bộ GD&ĐT cùng Quyết định số 4555/QĐ-ĐHQGHN quy định điều kiện, trình tự, thủ tục mở ngành đào tạo trình độ đại học tại ĐHQGHN. | `quy-dinh-mo-nganh#0` (`quy-dinh-mo-nganh.md`) |
-| 5 | Theo quy chế đào tạo đại học của ĐHQGHN, sinh viên cần đáp ứng những điều kiện nào để được công nhận tốt nghiệp? *(Kèm `metadata_filter={"audience": "student"}`)* | Theo Điều 43 QĐ 5115: Trong thời gian học tập tối đa, không đang bị truy cứu trách nhiệm hình sự, tích lũy đủ số tín chỉ, ĐTBCTL đạt từ 2,00 trở lên (2,50 đối với hệ tài năng/CLC), đạt chuẩn ngoại ngữ, GDQP-AN và GDTC. | `quy-che-dao-tao#175` (`quy-che-dao-tao.md`, Điều 43) |
+|---|----|-------------------------------|--------------------------|
+| 1 | Sinh viên có thể tìm kiếm những cơ hội nghề nghiệp nào thông qua UET? | UET cung cấp cổng thông tin việc làm, UET Job Fair với hơn 50 doanh nghiệp, các chương trình thực tập và vị trí tuyển dụng như kỹ sư phần mềm C/C++, AI, Embedded Software và thiết kế cơ khí. | `co-hoi-nghe-nghiep#7` (kết quả Cương); `co-hoi-nghe-nghiep#0` (kết quả Đạt) |
+| 2 | UET hiện cung cấp những thông tin tuyển sinh nào cho thí sinh? | UET cung cấp chỉ tiêu, phương thức xét tuyển (thi tốt nghiệp THPT, HSA/ĐGNL, SAT/ACT), ngưỡng và quy đổi điểm, điểm chuẩn, danh mục ngành, chính sách học bổng và hướng dẫn nhập học. | `tuyen-sinh#0` |
+| 3 | Những mục tiêu chính trong chiến lược phát triển của Trường Đại học Công nghệ là gì? | Duy trì vị thế đại học nghiên cứu và đổi mới sáng tạo hàng đầu; nâng cao chất lượng nhân lực; tăng hợp tác Trường - Viện - Doanh nghiệp và tự chủ bền vững; hướng tới nhóm trường tiên tiến của châu Á vào năm 2045. | `chien-luoc-phat-trien#12` (kết quả Cương); `chien-luoc-phat-trien#2` (kết quả Đạt) |
+| 4 | Điều kiện và trình tự để mở một ngành đào tạo trình độ đại học được quy định như thế nào? | Cơ sở đào tạo phải đáp ứng điều kiện về đội ngũ giảng viên, chương trình/giáo trình và cơ sở vật chất; sau đó xây dựng đề án, tổ chức thẩm định ở cấp khoa/trường và trình cấp có thẩm quyền của ĐHQGHN phê duyệt theo các văn bản hiện hành. | `quy-dinh-mo-nganh#0` |
+| 5 | Theo quy chế đào tạo đại học của ĐHQGHN, sinh viên cần đáp ứng những điều kiện nào để được công nhận tốt nghiệp? | Sinh viên phải còn trong thời gian học tối đa, tích lũy đủ tín chỉ, đạt ĐTBCTL từ 2,00 trở lên (2,50 với chương trình tài năng/CLC), đạt chuẩn ngoại ngữ, hoàn thành GDQP-AN và GDTC, đồng thời không đang bị kỷ luật đình chỉ học tập. | Điều 43: `quy-che-dao-tao#122` (kết quả Cương); `quy-che-dao-tao#175` (kết quả Đạt) |
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
 > Cách chấm (theo `docs/SCORING.md`): **2 điểm/câu** — top-3 chứa chunk liên quan + agent trả lời đúng (2), có liên quan nhưng thiếu/không ở top-1 (1), không có trong top-3 (0).
 
-| # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Điểm số & Ghi chú |
-|---|---------|-------------------------------|-------------------------------|-------------------|
-| 1 | Cơ hội nghề nghiệp UET... | RecursiveChunker | **Có (Top-1, Score 0.7396)** | 2/2 điểm. Nắm trọn khối bản tin việc làm và đối tác tuyển dụng. |
-| 2 | Thông tin tuyển sinh UET... | RecursiveChunker | **Có (Top-2, Score 0.5122)** | 1/2 điểm. Top-1 bị tin việc làm cạnh tranh từ khóa, nhưng Top-2 chứa đầy đủ đề án tuyển sinh. |
-| 3 | Mục tiêu chiến lược phát triển... | RecursiveChunker | **Có (Top-1, Score 0.6108)** | 2/2 điểm. Trích xuất chính xác sứ mạng và tầm nhìn 2045 của UET. |
-| 4 | Điều kiện, trình tự mở ngành... | RecursiveChunker | **Có (Top-1, Score 0.7073)** | 2/2 điểm. Tìm trúng văn bản pháp quy Thông tư 02/2022 và QĐ 4555. |
-| 5 | Điều kiện công nhận tốt nghiệp... | RecursiveChunker + Metadata Filter | **Có (Top-1, Score 0.6331)** | 2/2 điểm. Lọc chuẩn `audience="student"`, trích đúng Điều 43 quy chế đào tạo. |
+| # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
+|---|---------|-------------------------------|-------------------------------|---------|
+| 1 | Cơ hội nghề nghiệp | SentenceChunker (Cương) | Có, Top-1 | Score 0.8022; chunk nói về Job Fair, thực tập và tuyển dụng |
+| 2 | Thông tin tuyển sinh | SentenceChunker (Cương) | Có, Top-1 | Score 0.7263; với Đạt, chunk đúng nằm ở Top-2 do cạnh tranh từ khóa với trang việc làm |
+| 3 | Mục tiêu chiến lược phát triển | SentenceChunker (Cương) | Có, Top-1 | Score 0.7797; lấy đúng mục tiêu chiến lược chung |
+| 4 | Điều kiện và trình tự mở ngành | SentenceChunker (Cương) | Có, Top-1 | Score 0.8155; lấy đúng chunk về điều kiện và quy trình thẩm định |
+| 5 | Điều kiện công nhận tốt nghiệp | SentenceChunker (Cương) + lọc `audience=student` | Có, Top-1 | Score 0.8290; lấy đúng Điều 43 của quy chế đào tạo |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
-> **Cực kỳ hữu ích, thể hiện rõ nhất ở Câu hỏi 4 và Câu hỏi 5:**  
-> 1. **Ở Câu hỏi 4** (*"Điều kiện và trình tự để mở một ngành đào tạo..."*): Khi người dùng là sinh viên hỏi câu hỏi chung chung, nếu **không dùng bộ lọc**, hệ thống lập tức xếp tài liệu quản trị nội bộ dành cho cán bộ giảng viên (`quy-dinh-mo-nganh.md`, `audience: faculty`) lên Top-1 (0.7073) và Top-2 (0.6508). Khi **bật pre-filtering `metadata_filter={"audience": "student"}`**, 100% tài liệu của giảng viên bị loại bỏ ngay từ đầu, hệ thống chỉ trích xuất quy định học phần trong quy chế đào tạo của người học.  
-> 2. **Ở Câu hỏi 5**: Bộ lọc `{"audience": "student"}` đảm bảo chắc chắn rằng 100% tài liệu trả về cho điều kiện tốt nghiệp chỉ thuộc về quy chế đào tạo của sinh viên, loại bỏ hoàn toàn nguy cơ nhầm lẫn sang các quy chế thi đua hay văn bản nhân sự khác.
+> Có. Ở câu 5, lọc `audience=student` giúp loại các tài liệu quản trị dành cho giảng viên và tập trung vào quy chế áp dụng cho người học; ở câu 4 có thể dùng `audience=faculty` và `doc_type=policy` để ưu tiên tài liệu mở ngành. Kết quả của Đạt cho thấy pre-filtering đặc biệt hữu ích khi nhiều tài liệu cùng chứa các từ chung như “đào tạo”, “đại học” và “quy định”.
 
 ---
 
 ## 4. Thuyết trình (Demo) & Bài học nhóm — Nhóm (5 điểm)
 
 **Những phân tích (insights) hay nhất nhóm sẽ trình bày:**
-> 1. **Văn bản pháp quy có cấu trúc phân tầng tự nhiên:** `RecursiveChunker` với danh sách phân cách `["\n\n", "\n", ". ", " ", ""]` vượt trội hoàn toàn so với `FixedSizeChunker` vì nó tôn trọng ranh giới Điều/Khoản, tránh hiện tượng câu cụt hoặc mất tiêu đề điều luật.  
-> 2. **Sức mạnh của Pre-filtering trong phân quyền dữ liệu:** Phân loại metadata theo `audience` (`student` vs `faculty`) giải quyết triệt để bài toán trả lời nhầm đối tượng trong môi trường đại học.  
-> 3. **Tầm quan trọng của việc làm sạch dữ liệu trước khi chunking:** Loại bỏ menu điều hướng, breadcrumb và chân trang web giúp top-k retrieval đạt độ tập trung cao nhất vào nội dung học vụ thực tế.
+
+- SentenceChunker với ba câu mỗi chunk đạt 5/5 câu hỏi ở Top-1 vì giữ nguyên các mệnh đề trong văn bản hành chính và quy chế.
+- Embedding thật (Gemini/OpenAI) nhận biết các cách diễn đạt đồng nghĩa tốt hơn nhiều so với MockEmbedder dùng hash, vốn có thể cho điểm âm ngay cả khi hai câu cùng nghĩa.
+- Chất lượng retrieval phụ thuộc trước hết vào việc nạp đúng corpus; trường hợp của Đức cho thấy một pipeline chạy đúng kỹ thuật vẫn thất bại hoàn toàn nếu knowledge base không chứa tài liệu UET.
+- Metadata pre-filter giúp tránh lẫn tài liệu dành cho sinh viên với tài liệu dành cho giảng viên/cán bộ.
 
 **Bài học rút ra khi so sánh trong nhóm:**
-> Cùng một kho tài liệu và cùng một câu hỏi, nhưng chiến lược chia nhỏ khác nhau dẫn đến khác biệt rất lớn: `FixedSizeChunker` làm đứt đôi 40% các quy định học vụ khiến AI trả lời thiếu ý hoặc sai lệch con số, trong khi `RecursiveChunker` đạt độ chính xác ngữ cảnh cao nhất nhờ giữ nguyên vẹn đơn vị ngữ nghĩa.
+> Với cùng câu hỏi, cách chia theo câu đưa thông tin đầy đủ vào một chunk nên đạt thứ hạng cao và ổn định hơn cách cắt cố định. RecursiveChunker giữ cấu trúc tốt nhưng còn phụ thuộc cách tài liệu xuống dòng, còn FixedSizeChunker có nguy cơ tách điều kiện khỏi kết luận. Ngoài chunking, embedding model, corpus được nạp và metadata cũng ảnh hưởng trực tiếp đến kết quả nên không thể đánh giá chiến lược chunking một cách tách rời.
 
 **Nếu làm lại, nhóm sẽ thay đổi gì trong chiến lược dữ liệu (data strategy)?**
-> Nếu có thêm thời gian, nhóm sẽ phát triển một `SectionHeadingChunker` tùy biến riêng để tự động nhận diện các tiêu đề `## Điều...` và gắn kèm tiêu đề điều luật vào đầu mỗi chunk con, giúp AI luôn nắm rõ ngữ cảnh nguồn ngay cả khi một điều khoản quá dài buộc phải chia nhỏ.
-
-### Phân tích ca thất bại (Failure Case Analysis)
-
-- **Câu hỏi bị lỗi:** Câu hỏi 5 khi không dùng bộ lọc (`filter = None`): *"Quy định về chương trình đào tạo và mở ngành học dành cho người học?"*
-- **Hiện tượng & Nguyên nhân:** Văn bản `quy-dinh-mo-nganh.md` (vốn dành cho giảng viên `audience: faculty`) xuất hiện ở Top-3 với điểm tương đồng rất cao (0.6702) do có sự trùng lặp dày đặc về các thuật ngữ *"chương trình đào tạo"*, *"mở ngành"*. Mô hình embedding chỉ đo độ gần gũi về chủ đề ngữ nghĩa chung mà không tự phân biệt được đối tượng thụ hưởng nếu không có nhãn siêu dữ liệu.
-- **Đề xuất khắc phục:** Bắt buộc áp dụng cơ chế **Pre-filtering** theo trường `metadata_filter={"audience": "student"}` để loại bỏ hoàn toàn các văn bản nội bộ của cán bộ/giảng viên trước khi thực hiện xếp hạng cosine similarity.
+> Nhóm sẽ chuẩn hóa pipeline nạp dữ liệu để kiểm tra đúng năm tài liệu UET trước khi benchmark, lưu lại `retrieved_at`, phiên bản và số ký tự của từng tài liệu. Nhóm cũng sẽ chạy tự động cả ba chiến lược trên cùng embedding model và cùng bộ câu hỏi, ghi lại số chunk, độ dài trung bình, Top-1/Top-3 và MRR; sau đó chọn SentenceChunker kết hợp metadata pre-filter làm cấu hình chính.
 
 ---
 
@@ -211,9 +148,8 @@ class RecursiveChunker:
 
 | Tiêu chí | Điểm tự đánh giá |
 |----------|-------------------|
-| Lựa chọn tài liệu (Document Set Quality) | 10 / 10 |
-| Thiết kế chiến lược (Strategy Design) | 15 / 15 |
+| Lựa chọn tài liệu (Document Set Quality) | 9 / 10 |
+| Thiết kế chiến lược (Strategy Design) | 12 / 15 |
 | Chất lượng truy xuất (Retrieval Quality) | 10 / 10 |
-| Thuyết trình (Demo) | 5 / 5 |
-| **Tổng phần nhóm** | **40 / 40** |
-
+| Thuyết trình (Demo) | 4 / 5 |
+| **Tổng phần nhóm** | **35 / 40** |
